@@ -2,6 +2,7 @@ from htmlParse import stripTags
 import string
 
 import aaFuncs
+from wrapLine import wrap
 
 # defines terminal colors for Linux terminals
 # used to format 4chan text posts all fancy-like
@@ -17,9 +18,9 @@ class TermColor:
 # returns a comment without <span>, <br>, &gt;, etc.; removes them or replaces with color formatting
 
 def cleanCommentData(comment):
-	# FIXME bluetext for >>8675309 type quotes stays blue until newline;
-	#     this affects just a few posts
-	comment = string.replace(comment, "&gt;&gt;&gt;", TermColor.blue + '>>')
+	# FIXME bluetext for >>8675309 / >>>/g/7654321 type quotes stays blue until newline;
+	#     this affects just posts with body text after >> and >>>
+	comment = string.replace(comment, "&gt;&gt;&gt;", TermColor.blue + '>>>')
 	comment = string.replace(comment, "&gt;&gt;", TermColor.blue + '>>')
 	comment = string.replace(comment, "<br>", '\n' + TermColor.reset)
 	comment = string.replace(comment, "&gt;", '>')
@@ -29,21 +30,17 @@ def cleanCommentData(comment):
 	comment = stripTags(comment)
 	return comment
 
-# FIXME global asciiImagesEnable, asciiImageWidth; is globals the best way to do things?
-
 # takes in a list of thread numbers in order, a dict of complete threads
 # formats and prints the first post from each thread
 # the order threads are printed depends on the order of the thread numbers in threadNumList
 
-def printIndex(threadNumList, threadDataDict, imgPrefs):
-	asciiImagesEnable = imgPrefs["asciiImagesEnable"]
-	asciiImageWidth = imgPrefs["asciiImageWidth"]
+def printIndex(threadOrderedDict, prefs):
+	asciiImagesEnable = prefs["asciiImagesEnable"]
+	asciiImageWidth = prefs["asciiImageWidth"]
 	threadCount = 0
-	for threadNum in threadNumList:
+	for threadNum in threadOrderedDict:
 		threadCount += 1
-		if threadNum not in threadDataDict:
-			raise LookupError("Thread not found: " + str(threadNum))
-		thread = threadDataDict[threadNum]
+		thread = threadOrderedDict[threadNum]
 		op = thread[0]
 		threadNum = op[0]
 		opTextRaw = op[1]
@@ -55,26 +52,27 @@ def printIndex(threadNumList, threadDataDict, imgPrefs):
 			postsPluralText = " post."
 		if asciiImagesEnable: # assumes op always has a picture. which he does
 			aaFuncs.printUrlToAscii(opImgUrl, asciiImageWidth)
-		print TermColor.cyan + str(threadCount) + ": " + TermColor.blue + "No. " + str(threadNum) + TermColor.reset + '\n' \
+		print wrap( \
+			TermColor.cyan + str(threadCount) + ": " + TermColor.blue + "No. " + str(threadNum) + TermColor.reset + '\n' \
 			+ opTextClean + '\n' \
-			+ TermColor.blue + str(threadLen) + postsPluralText + TermColor.reset + '\n\n'
+			+ TermColor.blue + str(threadLen) + postsPluralText + TermColor.reset + '\n\n' \
+			, 80)
 
-# takes in a dict of complete threads, a thread number
+# takes in a thread in list form
 # formats and prints all the posts from the given thread
 
-def printThread(threadDataDict, threadNum, imgPrefs):
-	asciiImagesEnable = imgPrefs["asciiImagesEnable"]
-	asciiImageWidth = imgPrefs["asciiImageWidth"]
-	if threadNum not in threadDataDict:
-		raise LookupError("Thread not found: " + str(threadNum))
+def printThread(thread, prefs):
+	asciiImagesEnable = prefs["asciiImagesEnable"]
+	asciiImageWidth = prefs["asciiImageWidth"]
 	print '\n\n'
-	threadPosts = threadDataDict[threadNum] # list of [postNum, postText] lists
-	for post in threadPosts:
+	for post in thread:
 		postNum = post[0]
 		postTextDirty = post[1]
 		postTextClean = cleanCommentData(postTextDirty)
 		postImgUrl = post[2]
 		if asciiImagesEnable and postImgUrl != "":
 			aaFuncs.printUrlToAscii(postImgUrl, asciiImageWidth)
-		print TermColor.cyan + "No. " + str(postNum) + TermColor.reset + '\n' \
-			+ postTextClean + '\n\n'
+		print wrap( \
+			TermColor.cyan + "No. " + str(postNum) + TermColor.reset + '\n' \
+			+ postTextClean + '\n\n' \
+			, 80)

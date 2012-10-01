@@ -1,5 +1,6 @@
 import urllib2
 import json
+from collections import OrderedDict
 
 # threadReader takes in:
 #     JSON data for one thread (via threadReader().readJson(jsonDataStr))
@@ -44,10 +45,10 @@ class ThreadReader(object):
 		return self.allPosts
 
 # takes in a list of thread numbers from a board's front page and a board abbrev
-# returns a data dict of the complete threads from that front page
+# returns an ordered data dict of the complete threads from that front page
 
-def parseThreadListToDict(threadNumList, boardAbbr):
-	threadDataDict = dict()
+def parseThreadListToODict(threadNumList, boardAbbr):
+	threadDataDict = OrderedDict()
 	for threadNum in threadNumList:
 		threadUrl = "http://api.4chan.org/" + boardAbbr + "/res/" + str(threadNum) + ".json"
 		threadJsonData = urllib2.urlopen(threadUrl).read()

@@ -13,32 +13,42 @@ import htmlParse
 import threadParse
 import threadPrint
 
+# quick and dirty functions for internal use; DRY
+
+def displayIndex():
+	threadPrint.printIndex(allThreads, userPrefs)
+
 # program start!
 
-boardAbbr = userInput.getBoardArgsFirst()
-imgPrefs = userInput.getUserImgPrefs()
+userPrefs = dict()
+userInput.setUserImgPrefs(userPrefs)
 
-# orderedThreadNums is a list of the id numbers of the first x threads on the front page of the selected board
+boardAbbr = userInput.getBoardArgsFirst()
+
+# orderedThreadNums is a list of the id numbers of  first x threads on the front page of the selected board
 orderedThreadNums = htmlParse.fetchBoardThreads(boardAbbr)
 
-# allThreads is a dict that holds data on each thread, because dicts are mostly cooler than lists
-allThreads = threadParse.parseThreadListToDict(orderedThreadNums, boardAbbr)
-threadPrint.printIndex(orderedThreadNums, allThreads, imgPrefs)
+# allThreads is an ordered dict that holds data on each thread,
+allThreads = threadParse.parseThreadListToODict(orderedThreadNums, boardAbbr)
+
+displayIndex()
 
 while True:
 	commandRaw = raw_input('Enter thread number, "index", or "exit": ')
 	command = commandRaw.lower()
 	userInput.checkForExit(command)
 	if command == "index":
-		threadPrint.printIndex(orderedThreadNums, allThreads, imgPrefs)
+		displayIndex()
 	else:
 		threadNum = -1
 		try:
 			threadNum = int(command)
 			if threadNum in allThreads:
-				threadPrint.printThread(allThreads, threadNum, imgPrefs)
+				threadPrint.printThread(allThreads[threadNum], userPrefs)
 			elif threadNum <= len(orderedThreadNums) and threadNum > 0:
-				threadPrint.printThread(allThreads, orderedThreadNums[threadNum - 1], imgPrefs)
+				# allThreads[allThreads.items()[n - 1][0]] is a hacky way to get the nth element of an OrderedDict
+				# FIXME this syntax is super dirty, is there a better way to do this?
+				threadPrint.printThread(allThreads[allThreads.items()[threadNum - 1][0]], userPrefs)
 			else:
 				print "Thread not found:", threadNum
 		except ValueError:

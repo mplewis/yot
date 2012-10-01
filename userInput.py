@@ -17,7 +17,9 @@ def getBoardArgsFirst():
 		boardAbbr = sys.argv[1]
 	return boardAbbr
 
-def getUserImgPrefs():
+# takes in a dict of user preferences
+# reads user input for image prefs and saves prefs to dictPrefs
+def setUserImgPrefs(dictPrefs):
 	asciiImagesEnable = False
 	asciiImageWidth   = -1
 	imagesYN = raw_input("Enable images? [y/N]: ")
@@ -34,4 +36,6 @@ def getUserImgPrefs():
 			except ValueError:
 				print "Invalid image width: " + str(tempImageWidth)
 		asciiImageWidth = int(tempImageWidth)
-	return dict({"asciiImagesEnable": asciiImagesEnable, "asciiImageWidth": asciiImageWidth})
+	# save prefs to dict
+	dictPrefs["asciiImagesEnable"] = asciiImagesEnable
+	dictPrefs["asciiImageWidth"] = asciiImageWidth
