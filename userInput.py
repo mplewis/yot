@@ -26,6 +26,7 @@ def setUserImgPrefs(dictPrefs):
 	imagesYNL = imagesYN.lower()
 	if imagesYNL == "yes" or imagesYNL == "y":
 		asciiImagesEnable = True
+	"""
 	if asciiImagesEnable == True:
 		isIntValue = False
 		while isIntValue == False:
@@ -36,6 +37,7 @@ def setUserImgPrefs(dictPrefs):
 			except ValueError:
 				print "Invalid image width: " + str(tempImageWidth)
 		asciiImageWidth = int(tempImageWidth)
+	"""
 	# save prefs to dict
 	dictPrefs["asciiImagesEnable"] = asciiImagesEnable
-	dictPrefs["asciiImageWidth"] = asciiImageWidth
+	# dictPrefs["asciiImageWidth"] = asciiImageWidth

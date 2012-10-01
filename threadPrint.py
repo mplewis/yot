@@ -30,49 +30,53 @@ def cleanCommentData(comment):
 	comment = stripTags(comment)
 	return comment
 
-# takes in a list of thread numbers in order, a dict of complete threads
+# takes in an OrderedDict of complete threads
 # formats and prints the first post from each thread
 # the order threads are printed depends on the order of the thread numbers in threadNumList
 
 def printIndex(threadOrderedDict, prefs):
 	asciiImagesEnable = prefs["asciiImagesEnable"]
-	asciiImageWidth = prefs["asciiImageWidth"]
 	threadCount = 0
+	# OrderedDict iterates by keys, not key-value pairs. It's really silly, imo.
 	for threadNum in threadOrderedDict:
 		threadCount += 1
 		thread = threadOrderedDict[threadNum]
-		op = thread[0]
+		op = thread.items()[0]
+		opData = op[1]
 		threadNum = op[0]
-		opTextRaw = op[1]
+		opTextRaw = opData["postText"]
 		opTextClean = cleanCommentData(opTextRaw)
-		opImgUrl = op[2]
+		opImageUrl = opData["imageUrl"]
 		threadLen = len(thread)
+		# if you write a program and say something like "one files remaining",
+		# I probably hate you for being lazy.
 		postsPluralText = " posts."
 		if threadLen == "1":
 			postsPluralText = " post."
-		if asciiImagesEnable: # assumes op always has a picture. which he does
-			aaFuncs.printUrlToAscii(opImgUrl, asciiImageWidth)
+		# does not check if image url is blank because it
+		# assumes op always has a picture. which he does
+		if asciiImagesEnable:
+			aaFuncs.printUrlToAscii(opImageUrl, prefs["termWidth"])
 		print wrap( \
 			TermColor.cyan + str(threadCount) + ": " + TermColor.blue + "No. " + str(threadNum) + TermColor.reset + '\n' \
 			+ opTextClean + '\n' \
 			+ TermColor.blue + str(threadLen) + postsPluralText + TermColor.reset + '\n\n' \
-			, 80)
+			, prefs["termWidth"])
 
-# takes in a thread in list form
+# takes in a thread in OrderedDict form
 # formats and prints all the posts from the given thread
 
-def printThread(thread, prefs):
+def printThread(threadOrderedDict, prefs):
 	asciiImagesEnable = prefs["asciiImagesEnable"]
-	asciiImageWidth = prefs["asciiImageWidth"]
 	print '\n\n'
-	for post in thread:
-		postNum = post[0]
-		postTextDirty = post[1]
+	for postNum in threadOrderedDict:
+		postData = threadOrderedDict[postNum]
+		postTextDirty = postData["postText"]
 		postTextClean = cleanCommentData(postTextDirty)
-		postImgUrl = post[2]
-		if asciiImagesEnable and postImgUrl != "":
-			aaFuncs.printUrlToAscii(postImgUrl, asciiImageWidth)
+		postImageUrl = postData["imageUrl"]
+		if asciiImagesEnable and postImageUrl != "":
+			aaFuncs.printUrlToAscii(postImageUrl, prefs["termWidth"])
 		print wrap( \
 			TermColor.cyan + "No. " + str(postNum) + TermColor.reset + '\n' \
 			+ postTextClean + '\n\n' \
-			, 80)
+			, prefs["termWidth"])

@@ -5,40 +5,45 @@ from collections import OrderedDict
 # threadReader takes in:
 #     JSON data for one thread (via threadReader().readJson(jsonDataStr))
 # threadReader can extract:
-#     number of posts, thread (OP post) number, all posts (list: [postNumber, postBodyText])
+#     number of posts, thread (OP post) number,
+#     all posts (OrderedDict: (postNum, postDataDict))
 
 class ThreadReader(object):
 	def __init__(self):
 		self.reset()
 	def reset(self):
-		self.jsonData = []
+		self.jsonData = None
 		self.boardAbbr = ""
 		self.op = None
 		self.numPosts = 0
-		self.allPosts = []
+		self.allPosts = OrderedDict()
 	def setBoardAbbr(self, boardAbbr):
 		self.boardAbbr = boardAbbr
 	def readJson(self, rawJsonData):
 		self.jsonData = json.loads(rawJsonData)
 		self.op = self.jsonData["posts"][0]
 		for post in self.jsonData["posts"]:
-			# postData holds info about each post
-			# data comes in the form of [postNum, postText, filename]
-			postData = []
-			postData.append(post["no"])
+			# postData is a dict which holds info about each post
+			#     postNum: post number
+			#     postText: post body
+			#     imageUrl: url of posted image
+			postData = dict()
 			# if post is textless, dict "post" will not have a key "com"
 			if "com" in post:
-				postData.append(post["com"])
+				postData["postText"] = post["com"]
 			else:
-				postData.append("< no text >")
+				postData["postText"] = "< no text >"
 			# if image is present, keys "tim" and "ext" show up in dict
 			if "tim" in post:
-				postData.append("http://images.4chan.org/" + self.boardAbbr + "/src/" + str(post["tim"]) + post["ext"])
+				postData["imageUrl"] = "http://images.4chan.org/" + self.boardAbbr + "/src/" + str(post["tim"]) + post["ext"]
 			else:
-				postData.append("")
-			self.allPosts.append(postData)
+				postData["imageUrl"] = ""
+			# store the post data dict as a key, value pair in the allPosts OrderedDict
+			#     key = postNum
+			#     value = postDataDict
+			self.allPosts[post["no"]] = postData
 	def getNumPosts(self):
-		return len(self.jsonData["posts"][0:])
+		return len(self.jsonData["posts"])
 	def getThreadNumber(self):
 		return self.op["no"]
 	def getAllPosts(self):

@@ -22,6 +22,7 @@ def displayIndex():
 
 userPrefs = dict()
 userInput.setUserImgPrefs(userPrefs)
+userPrefs["termWidth"] = 80
 
 boardAbbr = userInput.getBoardArgsFirst()
 
@@ -46,7 +47,8 @@ while True:
 			if threadNum in allThreads:
 				threadPrint.printThread(allThreads[threadNum], userPrefs)
 			elif threadNum <= len(orderedThreadNums) and threadNum > 0:
-				# allThreads[allThreads.items()[n - 1][0]] is a hacky way to get the nth element of an OrderedDict
+				# allThreads[allThreads.items()[n - 1][0]] is a hacky way to get
+				#     the first element of an nth element of an OrderedDict
 				# FIXME this syntax is super dirty, is there a better way to do this?
 				threadPrint.printThread(allThreads[allThreads.items()[threadNum - 1][0]], userPrefs)
 			else:
