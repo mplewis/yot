@@ -3,7 +3,7 @@ import json
 
 import sys
 # OrderedDict introduced in Python 2.7
-if sys.version_info[1] < 7:
+if sys.version_info[1] >= 7:
 	from collections import OrderedDict
 else:
 	# drop-in substitute for older Python versions
