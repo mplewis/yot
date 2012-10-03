@@ -1,6 +1,14 @@
 import urllib2
 import json
-from collections import OrderedDict
+
+import sys
+# OrderedDict introduced in Python 2.7
+if sys.version_info[1] < 7:
+	from collections import OrderedDict
+else:
+	# drop-in substitute for older Python versions
+	# http://pypi.python.org/pypi/ordereddict/1.1
+	from ordereddict import OrderedDict
 
 # threadReader takes in:
 #     JSON data for one thread (via threadReader().readJson(jsonDataStr))
