@@ -21,7 +21,6 @@ def getBoardArgsFirst():
 # reads user input for image prefs and saves prefs to dictPrefs
 def setUserImgPrefs(dictPrefs):
 	asciiImagesEnable = False
-	asciiImageWidth   = -1
 	imagesYN = raw_input("Enable images? [y/N]: ")
 	imagesYNL = imagesYN.lower()
 	if imagesYNL == "yes" or imagesYNL == "y":

@@ -8,6 +8,7 @@ import string
 
 # custom libraries
 
+import parseArgs
 import userInput
 import htmlParse
 import threadParse
@@ -21,10 +22,10 @@ def displayIndex():
 # program start!
 
 userPrefs = dict()
-userInput.setUserImgPrefs(userPrefs)
-userPrefs["termWidth"] = 80
+parseArgs.setParsedPrefs(userPrefs)
+# userInput.setUserImgPrefs(userPrefs)
 
-boardAbbr = userInput.getBoardArgsFirst()
+boardAbbr = userPrefs["board"]
 
 # orderedThreadNums is a list of the id numbers of  first x threads on the front page of the selected board
 orderedThreadNums = htmlParse.fetchBoardThreads(boardAbbr)

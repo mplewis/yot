@@ -24,6 +24,7 @@ class ThreadIDParser(HTMLParser):
 		return self.threadList
 
 # strips all html and leaves only text data
+# nabbed from http://stackoverflow.com/a/925630
 
 class MLStripper(HTMLParser):
 	def __init__(self):
@@ -45,7 +46,7 @@ def stripTags(html):
 def fetchBoardThreads(boardAbbr):
 	boardUrl = "http://boards.4chan.org/" + boardAbbr + "/1"
 	boardParser = ThreadIDParser()
-	print "Fetching threads from /" + boardAbbr + "/..."
+	print "Fetching threads from /" + boardAbbr + "/..." + '\n\n'
 	try:
 		boardHtmlData = urllib2.urlopen(boardUrl).read()
 	except urllib2.HTTPError as currError:
