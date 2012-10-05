@@ -19,12 +19,11 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
 	                        image display (default: 80 chars)
 
 Python dependencies
--------------------
-
-* aalib
-* Python Imaging Library
-* argparse
-* OrderedDict drop-in (if Python version < 2.7)
+===================
+* [python-aalib](http://jwilk.net/software/python-aalib)
+* [Python Imaging Library](http://www.pythonware.com/products/pil/)
+* [argparse](http://docs.python.org/library/argparse.html)
+* [OrderedDict drop-in](https://github.com/sprintly/ordereddict) (if Python version < 2.7)
 
 but why would you do this thing?
 ================================
