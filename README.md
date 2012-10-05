@@ -1,6 +1,7 @@
 yot: because console users need 4chan too
 =========================================
 
+
 Written for Python 2 by Matthew Lewis of Kestrel Development.
 
 Allows you to browse the threads on the front page of any 4chan imageboard from a terminal. **Supports *ASCII art* images!**
@@ -19,6 +20,7 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
 
 Python dependencies
 -------------------
+
 * aalib
 * Python Imaging Library
 * argparse
