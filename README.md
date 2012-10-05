@@ -19,14 +19,14 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
 
 Python dependencies
 -------------------
- * aalib
- * Python Imaging Library
- * argparse
- * OrderedDict drop-in (if Python version < 2.7)
+* aalib
+* Python Imaging Library
+* argparse
+* OrderedDict drop-in (if Python version < 2.7)
 
- but why would you do this thing?
- ================================
+but why would you do this thing?
+================================
 
- Because I love the terminal, and I love working with APIs, and I love the new 4chan API.
+Because I love the terminal, and I love working with APIs, and I love the new 4chan API.
 
- Feel free to send me a pull request if you come up with anything cool.
+Feel free to send me a pull request if you come up with anything cool.
