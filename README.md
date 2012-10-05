@@ -17,8 +17,16 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
 	                        set terminal width in chars for word wrap and ASCII
 	                        image display (default: 80 chars)
 
-Dependencies:
+Python dependencies
+-------------------
  * aalib
  * Python Imaging Library
  * argparse
  * OrderedDict drop-in (if Python version < 2.7)
+
+ but why would you do this thing?
+ ================================
+
+ Because I love the terminal, and I love working with APIs, and I love the new 4chan API.
+
+ Feel free to send me a pull request if you come up with anything cool.
