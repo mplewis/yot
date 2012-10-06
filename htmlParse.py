@@ -1,5 +1,7 @@
 from HTMLParser import HTMLParser
 import urllib2
+import sys
+# FIXME find a better way than importing sys
 
 # parses the html from a 4chan board index (http(s)://boards.4chan.org/board/[1-10])
 # and returns a list of the threads on that page, in order
