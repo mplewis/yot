@@ -8,8 +8,10 @@ argParser.add_argument("-i", "--images", help = "enable ASCII image display (def
 argParser.add_argument("-w", "--width", help = "set terminal width in chars for word wrap and ASCII image display (default: 80 chars)", type = int, default = 80)
 
 # get options from arg parser and put them into a prefs dict
-def setParsedPrefs(userPrefsDict):
+def getParsedPrefs():
 	args = argParser.parse_args()
-	userPrefsDict["board"] = args.board
-	userPrefsDict["termWidth"] = args.width
-	userPrefsDict["asciiImagesEnable"] = args.images
+	prefsDict = dict()
+	prefsDict["board"] = args.board
+	prefsDict["termWidth"] = args.width
+	prefsDict["asciiImagesEnable"] = args.images
+	return prefsDict

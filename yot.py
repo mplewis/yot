@@ -21,10 +21,7 @@ def displayIndex():
 
 # program start!
 
-userPrefs = dict()
-parseArgs.setParsedPrefs(userPrefs)
-# userInput.setUserImgPrefs(userPrefs)
-
+userPrefs = parseArgs.setParsedPrefs()
 boardAbbr = userPrefs["board"]
 
 # orderedThreadNums is a list of the id numbers of  first x threads on the front page of the selected board
