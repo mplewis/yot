@@ -20,6 +20,7 @@ class TermColor:
 def cleanCommentData(comment):
 	# FIXME bluetext for >>8675309 / >>>/g/7654321 type quotes stays blue until newline;
 	#     this affects just posts with body text after >> and >>>
+	# FIXME make this take care of [code][/code] and [spoiler][/spoiler] tags
 	comment = string.replace(comment, "&gt;&gt;&gt;", TermColor.blue + '>>>')
 	comment = string.replace(comment, "&gt;&gt;", TermColor.blue + '>>')
 	comment = string.replace(comment, "<br>", '\n' + TermColor.reset)
@@ -34,34 +35,37 @@ def cleanCommentData(comment):
 # formats and prints the first post from each thread
 # the order threads are printed depends on the order of the thread numbers in threadNumList
 
-def printIndex(threadOrderedDict, prefs):
-	asciiImagesEnable = prefs["asciiImagesEnable"]
+def printIndex(index):
+	replyIndent = 8
 	threadCount = 0
-	# OrderedDict iterates by keys, not key-value pairs. It's really silly, imo.
-	for threadNum in threadOrderedDict:
+	for thread in index.getAllThreads():
 		threadCount += 1
-		thread = threadOrderedDict[threadNum]
-		op = thread.items()[0]
-		opData = op[1]
-		threadNum = op[0]
-		opTextRaw = opData["postText"]
+		op = thread.getOp()
+		opNum = op['no']
+		opTime = op['now']
+		textPostsOmitted = ""
+		if 'omitted_posts' in op:
+			textPostsOmitted += TermColor.blue + str(op['omitted_posts'])
+			if op['omitted_posts'] == 1:
+				textPostsOmitted += " reply "
+			else:
+				textPostsOmitted += " replies "
+			if 'omitted_images' in op:
+				if op['omitted_images'] > 0:
+					textPostsOmitted += "and " + str(op['omitted_images'])
+					if op['omitted_images'] == 1:
+						textPostsOmitted += " image reply "
+					else:
+						textPostsOmitted += " image replies "
+			textPostsOmitted += "omitted." + TermColor.reset + "\n"
+		opTextRaw = op['com']
 		opTextClean = cleanCommentData(opTextRaw)
-		opImageUrl = opData["imageUrl"]
-		threadLen = len(thread)
-		# if you write a program and say something like "one files remaining",
-		# I probably hate you for being lazy.
-		postsPluralText = " posts."
-		if threadLen == "1":
-			postsPluralText = " post."
-		# does not check if image url is blank because it
-		# assumes op always has a picture. which he does
-		if asciiImagesEnable:
-			aaFuncs.printUrlToAscii(opImageUrl, prefs["termWidth"])
+		replies = thread.getReplies()
 		print wrap( \
-			TermColor.cyan + str(threadCount) + ": " + TermColor.blue + "No. " + str(threadNum) + TermColor.reset + '\n' \
+			TermColor.cyan + str(threadCount) + ": No. " + str(opNum) + TermColor.reset + '\n' \
 			+ opTextClean + '\n' \
-			+ TermColor.blue + str(threadLen) + postsPluralText + TermColor.reset + '\n\n' \
-			, prefs["termWidth"])
+			+ textPostsOmitted + '\n' \
+			, 80)
 
 # takes in a thread in OrderedDict form
 # formats and prints all the posts from the given thread

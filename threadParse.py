@@ -18,39 +18,39 @@ def webToStr(url):
 	return urllib2.urlopen(url).read()
 
 class Index(object):
-	def __init__(self, boardAbbr, pageNum = 0):
+	def __init__(self):
 		self.reset()
-		self.setBoard(boardAbbr)
-		self.setPage(pageNum)
-		self.refresh()
 	def reset(self):
 		self.jsonData = None
 		self.indexData = None
 		self.boardAbbr = ""
-		self.pageNum = -1
+		self.pageNum = 0
 		self.indexJsonUrl = ""
 		self.threadList = []
 
 	def setBoard(self, boardAbbr):
 		self.boardAbbr = boardAbbr
 		self.updateJsonUrl()
-	def getBoard(self):
-		return self.boardAbbr
-
 	def setPage(self, pageNum):
 		self.pageNum = pageNum
 		self.updateJsonUrl()
+	def getBoard(self):
+		return self.boardAbbr
 	def getPage(self):
 		return self.pageNum
 
 	def updateJsonUrl(self):
 		self.indexJsonUrl = 'http://api.4chan.org/' + self.boardAbbr + '/' + str(self.pageNum) + '.json'
+	def getJsonUrl(self):
+		return self.indexJsonUrl
 	def refresh(self):
 		self.jsonData = webToStr(self.indexJsonUrl)
 		self.indexData = json.loads(self.jsonData)
 		self.threadList = []
 		for threadData in self.indexData['threads']:
-			threadObj = Thread(threadData)
+			threadObj = Thread()
+			threadObj.setBoard(self.boardAbbr)
+			threadObj.setThreadData(threadData)
 			self.threadList.append(threadObj)
 
 	def getAllThreads(self):
@@ -64,13 +64,43 @@ class Index(object):
 		return self.indexData
 
 class Thread(object):
-	def __init__(self, threadData):
+	def __init__(self):
 		self.reset()
-		self.threadData = threadData
 	def reset(self):
+		self.jsonData = None
 		self.threadData = None
 		self.boardAbbr = ""
+		self.threadNum = -1
+		self.threadJsonUrl = ""
 
+	def setThreadData(self, threadData):
+		self.threadData = threadData
+		self.getThreadNumFromSelf()
+	def feedThreadJson(self, jsonData):
+		self.threadData = json.loads(jsonData)
+		self.getThreadNumFromSelf()
+	def getThreadNumFromSelf(self):
+		self.threadNum = self.threadData['posts'][0]['no']
+
+	def setBoard(self, boardAbbr):
+		self.boardAbbr = boardAbbr
+		self.updateJsonUrl()
+	def setNum(self, threadNum):
+		self.threadNum = threadNum
+		self.updateJsonUrl()
+	def getBoard(self):
+		return self.boardAbbr
+	def getNum(self):
+		return self.threadNum
+
+	def updateJsonUrl(self):
+		self.threadJsonUrl = 'http://api.4chan.org/' + self.boardAbbr + '/res/' + str(self.threadNum) + '.json'
+	def getJsonUrl(self):
+		return self.threadJsonUrl
+	def refresh(self):
+		self.jsonData = webToStr(self.threadJsonUrl)
+		self.threadData = json.loads(self.jsonData)
+		
 	def getAllPosts(self):
 		return self.threadData['posts']
 	def getPost(self, postNum):
@@ -84,8 +114,3 @@ class Thread(object):
 		return json.dumps(self.threadData)
 	def getJsonObj(self):
 		return self.threadData
-
-def getThreadFromBoard(boardAbbr, threadNum):
-	jsonRaw = webToStr('http://api.4chan.org/' + boardAbbr + '/res/' + str(threadNum) + '.json')
-	jsonObj = json.loads(jsonRaw)
-	return Thread(jsonObj)
