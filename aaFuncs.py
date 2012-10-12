@@ -8,7 +8,7 @@ from cStringIO import StringIO
 # requires Image, aalib
 # takes in image streaming object (StringIO or file handle) and image width in terminal chars
 # prints the image to the terminal as ascii
-def printImgToAscii(imgObj, maxAsciiWidth):
+def imgToAscii(imgObj, maxAsciiWidth):
 	asciiWidthToHeightConstant = 0.55
 	imgGrey = imgObj.convert('L') # is now grayscale
 	imgSize = imgGrey.size # (width, height)
@@ -26,12 +26,12 @@ def printImgToAscii(imgObj, maxAsciiWidth):
 	# change AsciiScreen to AnsiScreen or LinuxScreen to get different images
 	canvas = aalib.LinuxScreen(width = newImageWidth / 2, height = newImageHeight / 2)
 	canvas.put_image((0, 0), imgResize)
-	print canvas.render()
+	return canvas.render()
 
 # takes in an image url and width in terminal chars
 # prints the image to the terminal as ascii
 # requires urllib2
-def printUrlToAscii(imgUrl, maxAsciiWidth):
+def urlToAscii(imgUrl, maxAsciiWidth):
 	imgIO = StringIO(urllib2.urlopen(imgUrl).read())
 	imgObj = Image.open(imgIO)
-	printImgToAscii(imgObj, maxAsciiWidth)
+	return imgToAscii(imgObj, maxAsciiWidth)

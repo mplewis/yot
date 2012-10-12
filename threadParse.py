@@ -18,15 +18,26 @@ def webToStr(url):
 	return urllib2.urlopen(url).read()
 
 class Index(object):
-	def __init__(self):
+	def __init__(self, boardAbbr = ""):
 		self.reset()
+		self.setBoard(boardAbbr)
 	def reset(self):
+		self.iterIndex = 0
 		self.jsonData = None
 		self.indexData = None
 		self.boardAbbr = ""
 		self.pageNum = 0
 		self.indexJsonUrl = ""
 		self.threadList = []
+
+	def __iter__(self):
+		return self
+	def next(self):
+		self.iterIndex += 1
+		try:
+			return self.threadList[self.iterIndex]
+		except IndexError:
+			raise StopIteration
 
 	def setBoard(self, boardAbbr):
 		self.boardAbbr = boardAbbr
@@ -67,11 +78,21 @@ class Thread(object):
 	def __init__(self):
 		self.reset()
 	def reset(self):
+		self.iterIndex = 0
 		self.jsonData = None
 		self.threadData = None
 		self.boardAbbr = ""
 		self.threadNum = -1
 		self.threadJsonUrl = ""
+
+	def __iter__(self):
+		return self
+	def next(self):
+		self.iterIndex += 1
+		try:
+			return self.threadData['posts'][self.iterIndex]
+		except IndexError:
+			raise StopIteration
 
 	def setThreadData(self, threadData):
 		self.threadData = threadData
