@@ -8,8 +8,12 @@ from cStringIO import StringIO
 # requires Image, aalib
 # takes in image streaming object (StringIO or file handle) and image width in terminal chars
 # prints the image to the terminal as ascii
-def imgToAscii(imgObj, maxAsciiWidth):
-	asciiWidthToHeightConstant = 0.55
+def imgToAscii(imgObj, prefs, indent = False):
+	if indent:
+		maxAsciiWidth = prefs['termWidth'] - prefs['replyIndent']
+	else:
+		maxAsciiWidth = prefs['termWidth']
+	asciiWHConst = prefs['asciiWidthHeightRatio']
 	imgGrey = imgObj.convert('L') # is now grayscale
 	imgSize = imgGrey.size # (width, height)
 	imgWidth  = imgSize[0]
@@ -18,7 +22,7 @@ def imgToAscii(imgObj, maxAsciiWidth):
 	newImageHeight = 0
 	# for some reason images render at 1/2 the pixel size of the virtual screen; (width,height)*2 is super hacky but works
 	newImageWidth  = maxAsciiWidth * 2
-	newImageHeight = (asciiWidthToHeightConstant * maxAsciiWidth / imgWidth) * imgHeight * 2
+	newImageHeight = (asciiWHConst * maxAsciiWidth / imgWidth) * imgHeight * 2
 	# kill the floating points
 	newImageWidth  = int(newImageWidth)
 	newImageHeight = int(newImageHeight)
@@ -31,7 +35,7 @@ def imgToAscii(imgObj, maxAsciiWidth):
 # takes in an image url and width in terminal chars
 # prints the image to the terminal as ascii
 # requires urllib2
-def urlToAscii(imgUrl, maxAsciiWidth):
+def urlToAscii(imgUrl, prefs, indent = False):
 	imgIO = StringIO(urllib2.urlopen(imgUrl).read())
 	imgObj = Image.open(imgIO)
-	return imgToAscii(imgObj, maxAsciiWidth)
+	return imgToAscii(imgObj, prefs, indent = indent)

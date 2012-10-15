@@ -7,6 +7,7 @@ argParser.add_argument("board", help = "the abbreviation of the board to read (e
 argParser.add_argument("-i", "--images", help = "enable ASCII image display (default: disabled)", action = "store_true", default = False)
 argParser.add_argument("-w", "--width", help = "set terminal width in chars for word wrap and ASCII image display (default: 80 chars)", type = int, default = 80)
 argParser.add_argument("-t", "--indent", help = "set indent width in chars for thread replies (default: 8 chars)", type = int, default = 8)
+argParser.add_argument("-r", "--wh-ratio", help = "set width:height ratio of characters for ASCII image display (default: 0.55)", type = float, default = 0.55)
 
 # get options from arg parser and put them into a prefs dict
 def getParsedPrefs():
@@ -16,4 +17,5 @@ def getParsedPrefs():
 	prefsDict['asciiImagesEnable'] = args.images
 	prefsDict['termWidth'] = args.width
 	prefsDict['replyIndent'] = args.indent
+	prefsDict['asciiWidthHeightRatio'] = args.wh_ratio
 	return prefsDict
