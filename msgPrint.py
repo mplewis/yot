@@ -12,7 +12,7 @@ refresh, r:
 board [boardName], b [boardName]:
 	Select a new board (by abbreviation) and print its front page
 	Example: Type "board g", "b r9k" to select either /g/ or /r9k
-thread [threadNum], t [threadNum]:
+thread [threadNum], t [threadNum], [threadNum]:
 	Select a thread from the index, starting with 1
 	Use the thread index, not the thread number!
 	Example:
