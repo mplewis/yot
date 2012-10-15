@@ -13,8 +13,8 @@ else:
 
 
 # JSON representations of threads and indexes are exposed at the following URLs:
-#  http(s)://api.4chan.org/board/res/threadnumber.json
-#  http(s)://api.4chan.org/board/pagenumber.json (0 is main index)
+#     http(s)://api.4chan.org/board/res/threadnumber.json
+#     http(s)://api.4chan.org/board/pagenumber.json (0 is main index)
 
 
 

@@ -10,12 +10,13 @@ from wrapLine import wrap
 # used to format 4chan text posts all fancy-like
 
 class TermColor:
-	red    = '\033[31m' 
-	green  = '\033[32m'
-	blue   = '\033[34m'
-	cyan   = '\033[36m'
-	purple = '\033[35m'
-	reset  = '\033[0m'
+	red       = '\033[31m' 
+	green     = '\033[32m'
+	blue      = '\033[34m'
+	cyan      = '\033[36m'
+	purple    = '\033[35m'
+	bold      = '\033[1m'
+	reset     = '\033[0m'
 
 def getSpaces(num):
 	if num <= 0:
@@ -90,7 +91,7 @@ def printIndex(index, prefs):
 			print aaFuncs.urlToAscii(imgUrl, textWidth)
 		
 		print wrap( \
-			TermColor.cyan + str(threadCount) + ": No. " + str(opNum) + ' ' + TermColor.purple + opTimeDate + TermColor.reset + '\n' \
+			TermColor.cyan + TermColor.bold + str(threadCount) + ":" + TermColor.reset + TermColor.cyan + " No. " + str(opNum) + ' ' + TermColor.purple + opTimeDate + TermColor.reset + '\n' \
 			+ opTextClean + '\n' + textPostsOmitted \
 			, textWidth)
 
