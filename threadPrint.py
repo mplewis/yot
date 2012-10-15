@@ -55,7 +55,7 @@ def printIndex(index, prefs):
 		threadCount += 1
 		op = thread.getOp()
 		opNum = op['no']
-		opTime = op['now']
+		opTimeDate = op['now']
 		
 		textPostsOmitted = ""
 		if 'omitted_posts' in op:
@@ -84,15 +84,20 @@ def printIndex(index, prefs):
 			print aaFuncs.urlToAscii(imgUrl, textWidth)
 		
 		print wrap( \
-			TermColor.cyan + str(threadCount) + ": No. " + str(opNum) + ' ' + TermColor.purple + op['now'] + TermColor.reset + '\n' \
+			TermColor.cyan + str(threadCount) + ": No. " + str(opNum) + ' ' + TermColor.purple + opTimeDate + TermColor.reset + '\n' \
 			+ opTextClean + '\n' + textPostsOmitted \
 			, textWidth)
 
 		for reply in thread.getReplies():
 			indent = 8
 			replyNum = reply['no']
-		
-			print getSpaces(indent) + TermColor.cyan + "No. " + str(replyNum) + ' ' + TermColor.purple + reply['now'] + TermColor.reset
+			replyTimeDate = reply['now']
+
+			if imgEnable and 'tim' in reply:
+				imgUrl = "http://images.4chan.org/" + thread.getBoard() + "/src/" + str(reply['tim']) + reply['ext']
+				print indentText(aaFuncs.urlToAscii(imgUrl, textWidth - indent), indent)
+
+			print getSpaces(indent) + TermColor.cyan + "No. " + str(replyNum) + ' ' + TermColor.purple + replyTimeDate + TermColor.reset
 		
 			if 'com' in reply:
 				replyTextRaw = reply['com']
@@ -100,10 +105,6 @@ def printIndex(index, prefs):
 			else:
 				replyTextClean = "< no text >"
 		
-			if imgEnable and 'tim' in reply:
-				imgUrl = "http://images.4chan.org/" + thread.getBoard() + "/src/" + str(reply['tim']) + reply['ext']
-				print indentText(aaFuncs.urlToAscii(imgUrl, textWidth - indent), indent)
-
 			print indentText(wrap(replyTextClean, textWidth - indent), indent) + '\n'
 
 # takes in a thread in OrderedDict form
@@ -113,14 +114,21 @@ def printThread(thread, prefs):
 	textWidth = prefs['termWidth']
 	replyIndent = prefs['replyIndent']
 	imgEnable = prefs['asciiImagesEnable']
-	for post in thread.getAllPosts():
-		postData = threadOrderedDict[postNum]
-		postTextDirty = postData["postText"]
-		postTextClean = cleanCommentData(postTextDirty)
-		postImageUrl = postData["imageUrl"]
-		if asciiImagesEnable and postImageUrl != "":
-			aaFuncs.printUrlToAscii(postImageUrl, prefs["termWidth"])
-		print wrap( \
-			TermColor.cyan + "No. " + str(postNum) + TermColor.reset + '\n' \
-			+ postTextClean + '\n\n' \
-			, prefs["termWidth"])
+	
+	for post in thread:
+		postNum = post['no']
+		postTimeDate = post['now']
+
+		if imgEnable and 'tim' in post:
+			imgUrl = "http://images.4chan.org/" + thread.getBoard() + "/src/" + str(reply['tim']) + reply['ext']
+			print aaFuncs.urlToAscii(imgUrl, textWidth)
+
+		print TermColor.cyan + "No. " + str(postNum) + ' ' + TermColor.purple + postTimeDate + TermColor.reset
+
+		if 'com' in post:
+			postTextRaw = post['com']
+			postTextClean = cleanCommentData(postTextRaw)
+		else:
+			postTextClean = "< no text >"
+
+		print wrap(postTextClean, textWidth) + '\n'

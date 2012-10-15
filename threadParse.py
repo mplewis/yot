@@ -17,12 +17,14 @@ else:
 def webToStr(url):
 	return urllib2.urlopen(url).read()
 
+
+
 class Index(object):
 	def __init__(self, boardAbbr = ""):
 		self.reset()
 		self.setBoard(boardAbbr)
 	def reset(self):
-		self.iterIndex = 0
+		self.iterIndex = -1
 		self.jsonData = None
 		self.indexData = None
 		self.boardAbbr = ""
@@ -31,13 +33,7 @@ class Index(object):
 		self.threadList = []
 
 	def __iter__(self):
-		return self
-	def next(self):
-		self.iterIndex += 1
-		try:
-			return self.threadList[self.iterIndex]
-		except IndexError:
-			raise StopIteration
+		return IndexIter(self)
 
 	def setBoard(self, boardAbbr):
 		self.boardAbbr = boardAbbr
@@ -67,18 +63,31 @@ class Index(object):
 	def getAllThreads(self):
 		return self.threadList
 	def getThread(self, threadNum):
-		return self.indexData['threads'][threadNum]
+		return self.threadList[threadNum]
 
 	def getRawJson(self):
 		return self.jsonData
 	def getJsonObj(self):
 		return self.indexData
 
+class IndexIter(object):
+	def __init__(self, Index):
+		self.data = Index.getAllThreads()
+		self.pos = -1
+	def next(self):
+		try:
+			self.pos += 1
+			return self.data[self.pos]
+		except IndexError:
+			raise StopIteration
+
+
+
 class Thread(object):
 	def __init__(self):
 		self.reset()
 	def reset(self):
-		self.iterIndex = 0
+		self.iterIndex = -1
 		self.jsonData = None
 		self.threadData = None
 		self.boardAbbr = ""
@@ -86,13 +95,7 @@ class Thread(object):
 		self.threadJsonUrl = ""
 
 	def __iter__(self):
-		return self
-	def next(self):
-		self.iterIndex += 1
-		try:
-			return self.threadData['posts'][self.iterIndex]
-		except IndexError:
-			raise StopIteration
+		return ThreadIter(self)
 
 	def setThreadData(self, threadData):
 		self.threadData = threadData
@@ -135,3 +138,14 @@ class Thread(object):
 		return json.dumps(self.threadData)
 	def getJsonObj(self):
 		return self.threadData
+
+class ThreadIter(object):
+	def __init__(self, Thread):
+		self.data = Thread.getAllPosts()
+		self.pos = -1
+	def next(self):
+		try:
+			self.pos += 1
+			return self.data[self.pos]
+		except IndexError:
+			raise StopIteration
