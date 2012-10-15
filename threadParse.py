@@ -10,13 +10,16 @@ else:
 	# http://pypi.python.org/pypi/ordereddict/1.1
 	from ordereddict import OrderedDict
 
+
+
 # JSON representations of threads and indexes are exposed at the following URLs:
 #  http(s)://api.4chan.org/board/res/threadnumber.json
 #  http(s)://api.4chan.org/board/pagenumber.json (0 is main index)
 
+
+
 def webToStr(url):
 	return urllib2.urlopen(url).read()
-
 
 
 class Index(object):
@@ -51,6 +54,7 @@ class Index(object):
 	def getJsonUrl(self):
 		return self.indexJsonUrl
 	def refresh(self):
+		self.updateJsonUrl()
 		self.jsonData = webToStr(self.indexJsonUrl)
 		self.indexData = json.loads(self.jsonData)
 		self.threadList = []
@@ -59,6 +63,9 @@ class Index(object):
 			threadObj.setBoard(self.boardAbbr)
 			threadObj.setThreadData(threadData)
 			self.threadList.append(threadObj)
+
+	def getNumThreads(self):
+		return len(self.threadList)
 
 	def getAllThreads(self):
 		return self.threadList
@@ -122,6 +129,7 @@ class Thread(object):
 	def getJsonUrl(self):
 		return self.threadJsonUrl
 	def refresh(self):
+		self.updateJsonUrl()
 		self.jsonData = webToStr(self.threadJsonUrl)
 		self.threadData = json.loads(self.jsonData)
 		
@@ -149,3 +157,19 @@ class ThreadIter(object):
 			return self.data[self.pos]
 		except IndexError:
 			raise StopIteration
+
+
+
+def getFullThreadViaIndex(index, threadNum):
+	try:
+		threadNum = int(threadNum)
+	except ValueError:
+		raise ValueError('Not a valid thread number: "' + threadNum + '"')
+
+	if threadNum <= index.getNumThreads() and threadNum > 0:
+		thread = index.getThread(threadNum - 1)
+		thread.refresh()
+		return thread
+	else:
+		raise LookupError('Thread index out of range: ' + str(threadNum) + \
+			': must be from 1 to ' + str(index.getNumThreads()))

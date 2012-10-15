@@ -12,7 +12,7 @@ argParser.add_argument("-t", "--indent", help = "set indent width in chars for t
 def getParsedPrefs():
 	args = argParser.parse_args()
 	prefsDict = dict()
-	prefsDict['board'] = args.board
+	prefsDict['currBoard'] = args.board
 	prefsDict['asciiImagesEnable'] = args.images
 	prefsDict['termWidth'] = args.width
 	prefsDict['replyIndent'] = args.indent

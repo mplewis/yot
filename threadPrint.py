@@ -4,6 +4,8 @@ import string
 import aaFuncs
 from wrapLine import wrap
 
+
+
 # defines terminal colors for Linux terminals
 # used to format 4chan text posts all fancy-like
 
@@ -25,6 +27,8 @@ def indentText(str, numSpaces):
 	sp = getSpaces(numSpaces)
 	return sp + string.replace(str, '\n', '\n' + sp)
 
+
+
 # takes in a raw text+html comment from a 4chan post
 # returns a comment without <span>, <br>, &gt;, etc.; removes them or replaces with color formatting
 def cleanCommentData(comment):
@@ -40,6 +44,8 @@ def cleanCommentData(comment):
 	comment = string.replace(comment, '</span>', TermColor.reset)
 	comment = stripTags(comment)
 	return comment
+
+
 
 # takes in an OrderedDict of complete threads
 # formats and prints the first post from each thread
@@ -105,7 +111,9 @@ def printIndex(index, prefs):
 			else:
 				replyTextClean = "< no text >"
 		
-			print indentText(wrap(replyTextClean, textWidth - indent), indent) + '\n'
+			print indentText(wrap(replyTextClean, textWidth - indent), indent) + '\n' + TermColor.reset
+
+
 
 # takes in a thread in OrderedDict form
 # formats and prints all the posts from the given thread
@@ -131,4 +139,4 @@ def printThread(thread, prefs):
 		else:
 			postTextClean = "< no text >"
 
-		print wrap(postTextClean, textWidth) + '\n'
+		print wrap(postTextClean, textWidth) + '\n' + TermColor.reset

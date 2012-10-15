@@ -1,55 +1,59 @@
 #!/usr/bin/python
 
-# shared libraries
-
-import sys
-import urllib2
 import string
+from urllib2 import HTTPError
 
-# custom libraries
-
-import parseArgs
 import userInput
-import htmlParse
+import parseArgs
 import threadParse
 import threadPrint
+import msgPrint
+import errorPrint
 
-# quick and dirty functions for internal use; DRY
+def safeNewBoard(index, board):
+	index.setBoard(board)
+	try:
+		index.refresh()
+	except HTTPError, err:
+		errorPrint.getNewBoardFailed(err)
+	else:
+		threadPrint.printIndex(index, prefs)
 
-def displayIndex():
-	threadPrint.printIndex(allThreads, userPrefs)
+def safeRefresh(index):
+	try:
+		index.refresh()
+	except HTTPError, err:
+		errorPrint.boardRefreshFailed(err)
+	else:
+		threadPrint.printIndex(index, prefs)
 
-# program start!
+prefs = parseArgs.getParsedPrefs()
+currBoard = prefs['currBoard']
 
-userPrefs = parseArgs.setParsedPrefs()
-boardAbbr = userPrefs["board"]
+index = threadParse.Index()
+safeNewBoard(index, currBoard)
 
-# orderedThreadNums is a list of the id numbers of  first x threads on the front page of the selected board
-orderedThreadNums = htmlParse.fetchBoardThreads(boardAbbr)
-
-# allThreads is an ordered dict that holds data on each thread,
-allThreads = threadParse.parseThreadListToODict(orderedThreadNums, boardAbbr)
-
-displayIndex()
+threadPrint.printIndex(index, prefs)
 
 while True:
-	commandRaw = raw_input('Enter thread number, "index", or "exit": ')
-	command = commandRaw.lower()
-	userInput.checkForExit(command)
-	if command == "index":
-		displayIndex()
-	else:
-		threadNum = -1
+	action = userInput.menuPrompt()
+	if action[0] == 'help' or action[0] == 'h' or action[0] == '?':
+		msgPrint.help()
+	elif action[0] == 'index' or action[0] == 'i':
+		threadPrint.printIndex(index, prefs)
+	elif action[0] == 'refresh' or action[0] == 'r':
+		safeRefresh(index)
+	elif action[0] == 'board' or action[0] == 'b':
+		safeNewBoard(index, action[1])
+	elif action[0] == 'thread' or action[0] == 't':
 		try:
-			threadNum = int(command)
-			if threadNum in allThreads:
-				threadPrint.printThread(allThreads[threadNum], userPrefs)
-			elif threadNum <= len(orderedThreadNums) and threadNum > 0:
-				# allThreads[allThreads.items()[n - 1][0]] is a hacky way to get
-				#     the first element of an nth element of an OrderedDict
-				# FIXME this syntax is super dirty, is there a better way to do this?
-				threadPrint.printThread(allThreads[allThreads.items()[threadNum - 1][0]], userPrefs)
-			else:
-				print "Thread not found:", threadNum
-		except ValueError:
-			print "Not a thread number:", commandRaw
+			threadPrint.printThread(threadParse.getFullThreadViaIndex(index, action[1]), prefs)
+		except ValueError, err:
+			errorPrint.invalidThreadNum(err)
+		except LookupError, err:
+			errorPrint.invalidThreadNum(err)
+	else:
+		try:
+			threadPrint.printThread(threadParse.getFullThreadViaIndex(index, action[0]), prefs)
+		except Exception:
+			print 'Command not recognized: "' + string.join(action) + '"'
