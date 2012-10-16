@@ -56,6 +56,7 @@ def printIndex(index, prefs):
 	textWidth = prefs['termWidth']
 	replyIndent = prefs['replyIndent']
 	imgEnable = prefs['asciiImagesEnable']
+	ignoreReplies = prefs['ignoreReplies']
 	threadCount = 0
 
 	for thread in index:
@@ -95,24 +96,25 @@ def printIndex(index, prefs):
 			+ opTextClean + '\n' + textPostsOmitted \
 			, textWidth)
 
-		for reply in thread.getReplies():
-			indent = prefs['replyIndent']
-			replyNum = reply['no']
-			replyTimeDate = reply['now']
+		if not ignoreReplies:
+			for reply in thread.getReplies():
+				indent = prefs['replyIndent']
+				replyNum = reply['no']
+				replyTimeDate = reply['now']
 
-			if imgEnable and 'tim' in reply:
-				imgUrl = "http://images.4chan.org/" + thread.getBoard() + "/src/" + str(reply['tim']) + reply['ext']
-				print indentText(aaFuncs.urlToAscii(imgUrl, prefs, indent = True), indent)
+				if imgEnable and 'tim' in reply:
+					imgUrl = "http://images.4chan.org/" + thread.getBoard() + "/src/" + str(reply['tim']) + reply['ext']
+					print indentText(aaFuncs.urlToAscii(imgUrl, prefs, indent = True), indent)
 
-			print getSpaces(indent) + TermColor.cyan + "No. " + str(replyNum) + ' ' + TermColor.purple + replyTimeDate + TermColor.reset
-		
-			if 'com' in reply:
-				replyTextRaw = reply['com']
-				replyTextClean = cleanCommentData(replyTextRaw)
-			else:
-				replyTextClean = "< no text >"
-		
-			print indentText(wrap(replyTextClean, textWidth - indent), indent) + '\n' + TermColor.reset
+				print getSpaces(indent) + TermColor.cyan + "No. " + str(replyNum) + ' ' + TermColor.purple + replyTimeDate + TermColor.reset
+			
+				if 'com' in reply:
+					replyTextRaw = reply['com']
+					replyTextClean = cleanCommentData(replyTextRaw)
+				else:
+					replyTextClean = "< no text >"
+			
+				print indentText(wrap(replyTextClean, textWidth - indent), indent) + '\n' + TermColor.reset
 
 
 
