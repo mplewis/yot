@@ -1,5 +1,8 @@
 import urllib2
 import json
+import string
+
+from htmlParse import stripTags
 
 import sys
 # OrderedDict introduced in Python 2.7
@@ -22,6 +25,16 @@ def webToStr(url):
 	return urllib2.urlopen(url).read()
 
 
+
+def purifyCommentData(comment):
+	comment = string.replace(comment, "<br>", ' ')
+	comment = string.replace(comment, "&gt;", '>')
+	comment = string.replace(comment, "&quot;", '"')
+	comment = stripTags(comment)
+	return comment
+
+
+
 class Index(object):
 	def __init__(self, boardAbbr = ""):
 		self.reset()
@@ -34,6 +47,9 @@ class Index(object):
 		self.pageNum = 0
 		self.indexJsonUrl = ""
 		self.threadList = []
+
+	def __repr__(self):
+		return "/" + self.boardAbbr + "/ (" + str(len(self.getAllThreads())) + " posts)"
 
 	def __iter__(self):
 		return IndexIter(self)
@@ -101,6 +117,13 @@ class Thread(object):
 		self.threadNum = -1
 		self.threadJsonUrl = ""
 
+	def __repr__(self):
+		if 'com' in self.getOp():
+			shortOpText = purifyCommentData(self.getOp()['com'])[0:39]
+		else:
+			shortOpText = "< no text >"
+		return "/" + self.boardAbbr + "/" + str(self.threadNum) + " (" + str(self.getNumReplies()) + "r, " + str(self.getNumImageReplies()) + "i): \"" + shortOpText + '"'
+
 	def __iter__(self):
 		return ThreadIter(self)
 
@@ -124,6 +147,14 @@ class Thread(object):
 	def getNum(self):
 		return self.threadNum
 
+	def getNumReplies(self):
+		return len(self.getAllPosts()) + self.getNumPostsOmitted()
+	def getNumImageReplies(self):
+		images = 0
+		for post in self.getAllPosts():
+			if 'tim' in post:
+				images += 1
+		return images + self.getNumImagesOmitted()
 	def getNumPostsOmitted(self):
 		if 'omitted_posts' in self.getOp():
 			return self.getOp()['omitted_posts']
@@ -131,7 +162,7 @@ class Thread(object):
 			return 0
 	def getNumImagesOmitted(self):
 		if 'omitted_images' in self.getOp():
-			return self.getOp()['omitted_posts']
+			return self.getOp()['omitted_images']
 		else:
 			return 0
 
