@@ -124,6 +124,17 @@ class Thread(object):
 	def getNum(self):
 		return self.threadNum
 
+	def getNumPostsOmitted(self):
+		if 'omitted_posts' in self.getOp():
+			return self.getOp()['omitted_posts']
+		else:
+			return 0
+	def getNumImagesOmitted(self):
+		if 'omitted_images' in self.getOp():
+			return self.getOp()['omitted_posts']
+		else:
+			return 0
+
 	def updateJsonUrl(self):
 		self.threadJsonUrl = 'http://api.4chan.org/' + self.boardAbbr + '/res/' + str(self.threadNum) + '.json'
 	def getJsonUrl(self):
@@ -168,7 +179,9 @@ def getFullThreadViaIndex(index, threadNum):
 
 	if threadNum <= index.getNumThreads() and threadNum > 0:
 		thread = index.getThread(threadNum - 1)
-		thread.refresh()
+		if thread.getNumPostsOmitted() != 0:
+			print "DEBUG: REFRESHING THREAD"
+			thread.refresh()
 		return thread
 	else:
 		raise LookupError('Thread index out of range: ' + str(threadNum) + \

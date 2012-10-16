@@ -55,5 +55,5 @@ while True:
 	else:
 		try:
 			threadPrint.printThread(threadParse.getFullThreadViaIndex(index, action[0]), prefs)
-		except Exception:
+		except Exception: # FIXME this is a hacky way to catch bad commands
 			print 'Command not recognized: "' + string.join(action) + '"'
