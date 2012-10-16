@@ -6,7 +6,7 @@ Written for Python 2 by Matthew Lewis of Kestrel Development.
 
 Allows you to browse the threads on the front page of any 4chan imageboard from a terminal. **Supports *ASCII art* images!**
 
-    usage: yot.py [-h] [-i] [-w WIDTH] [-t INDENT] board
+    usage: yot.py [-h] [-i] [-o] [-w WIDTH] [-t INDENT] [-r WH_RATIO] board
 
     positional arguments:
       board                 the abbreviation of the board to read (ex: r9k, g, tg)
@@ -14,12 +14,18 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
     optional arguments:
       -h, --help            show this help message and exit
       -i, --images          enable ASCII image display (default: disabled)
+      -o, --op-only         only show the first post of each thread on a board's
+                            front page, instead of showing the first post and a
+                            few replies (default: disabled)
       -w WIDTH, --width WIDTH
                             set terminal width in chars for word wrap and ASCII
                             image display (default: 80 chars)
       -t INDENT, --indent INDENT
                             set indent width in chars for thread replies (default:
                             8 chars)
+      -r WH_RATIO, --wh-ratio WH_RATIO
+                            set width:height ratio of characters for ASCII image
+                            display (default: 0.55)
 
 Python dependencies
 ===================
