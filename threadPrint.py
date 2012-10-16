@@ -12,6 +12,7 @@ from wrapLine import wrap
 class TermColor:
 	red       = '\033[31m' 
 	green     = '\033[32m'
+	yellow    = '\033[33m'
 	blue      = '\033[34m'
 	cyan      = '\033[36m'
 	purple    = '\033[35m'
@@ -65,6 +66,11 @@ def printIndex(index, prefs):
 		opNum = op['no']
 		opTimeDate = op['now']
 		
+		if 'sub' in op:
+			opSubject = ' ' + op['sub']
+		else:
+			opSubject = ""
+
 		textPostsOmitted = ""
 		if 'omitted_posts' in op:
 			textPostsOmitted += TermColor.blue + str(op['omitted_posts'])
@@ -92,7 +98,7 @@ def printIndex(index, prefs):
 			print aaFuncs.urlToAscii(imgUrl, prefs)
 		
 		print wrap( \
-			TermColor.cyan + TermColor.bold + str(threadCount) + ":" + TermColor.reset + TermColor.cyan + " No. " + str(opNum) + ' ' + TermColor.purple + opTimeDate + TermColor.reset + '\n' \
+			TermColor.cyan + TermColor.bold + str(threadCount) + ":" + TermColor.yellow + opSubject + TermColor.reset + TermColor.cyan + " No. " + str(opNum) + ' ' + TermColor.purple + opTimeDate + TermColor.reset + '\n' \
 			+ opTextClean + '\n' + textPostsOmitted \
 			, textWidth)
 

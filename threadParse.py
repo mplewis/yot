@@ -211,7 +211,6 @@ def getFullThreadViaIndex(index, threadNum):
 	if threadNum <= index.getNumThreads() and threadNum > 0:
 		thread = index.getThread(threadNum - 1)
 		if thread.getNumPostsOmitted() != 0:
-			print "DEBUG: REFRESHING THREAD"
 			thread.refresh()
 		return thread
 	else:
