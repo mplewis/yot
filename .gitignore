@@ -2,3 +2,4 @@ test*
 test/*
 *.pyc
 *.sublime-*
+config.yml

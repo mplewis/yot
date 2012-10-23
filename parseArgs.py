@@ -1,6 +1,6 @@
 #!/usr/bin/python
-
 import argparse
+from loadConfig import loadConfig
 
 argParser = argparse.ArgumentParser()
 argParser.add_argument("board", help = "the abbreviation of the board to read (ex: r9k, g, tg)")
@@ -12,12 +12,28 @@ argParser.add_argument("-r", "--wh-ratio", help = "set width:height ratio of cha
 
 # get options from arg parser and put them into a prefs dict
 def getParsedPrefs():
+	cfg = loadConfig()
 	args = argParser.parse_args()
 	prefsDict = dict()
 	prefsDict['currBoard'] = args.board
-	prefsDict['asciiImagesEnable'] = args.images
-	prefsDict['ignoreReplies'] = args.op_only
-	prefsDict['termWidth'] = args.width
-	prefsDict['replyIndent'] = args.indent
-	prefsDict['asciiWidthHeightRatio'] = args.wh_ratio
+	if args.images == None:
+		prefsDict['asciiImagesEnable'] = cfg['images']['enableAsciiImages']
+	else:
+		prefsDict['asciiImagesEnable'] = args.images
+	if args.op_only == None:
+		prefsDict['ignoreReplies'] = cfg['display']['onlyShowOP']
+	else:
+		prefsDict['ignoreReplies'] = args.op_only
+	if args.width == None:
+		prefsDict['termWidth'] = cfg['display']['terminalWidth']
+	else:
+		prefsDict['termWidth'] = args.width
+	if args.indent == None:
+		prefsDict['replyIndent'] = cfg['display']['replyIndent']
+	else:
+		prefsDict['replyIndent'] = args.indent
+	if args.wh_ratio == None:
+		prefsDict['asciiWidthHeightRatio'] = cfg['images']['asciiWidthHeightRatio']
+	else:
+		prefsDict['asciiWidthHeightRatio'] = args.wh_ratio
 	return prefsDict

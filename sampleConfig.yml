@@ -1,0 +1,8 @@
+# default options for yot
+display:
+    terminalWidth: 80
+    replyIndent: 8
+    onlyShowOP: False
+images:
+    enableAsciiImages: True
+    asciiWidthHeightRatio: 0.55
