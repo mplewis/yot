@@ -1,7 +1,6 @@
 yot: because console users need 4chan too
 =========================================
 
-
 Written for Python 2 by Matthew Lewis of Kestrel Development.
 
 Allows you to browse the threads on the front page of any 4chan imageboard from a terminal. **Supports *ASCII art* images!**
@@ -26,6 +25,8 @@ Allows you to browse the threads on the front page of any 4chan imageboard from 
       -r WH_RATIO, --wh-ratio WH_RATIO
                             set width:height ratio of characters for ASCII image
                             display (default: 0.55)
+
+Make sure you copy `sampleConfig.yml` to `config.yml` so that you have a working default config file. Otherwise, yot will get mad at you when you run it without specifying every argument.
 
 Python dependencies
 ===================
