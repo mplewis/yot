@@ -1,7 +1,14 @@
-yot: because console users need 4chan too
-=========================================
+### This is unmaintained :(
 
-Written for Python 2 by Matthew Lewis of Kestrel Development.
+I don't have time to maintain this project any more. If you'd like to build on what I have here, feel free!
+
+I'm always available at matt@mplewis.com for questions.
+
+# yot
+
+*because console users need 4chan too*
+
+Written for Python 2.
 
 Allows you to browse the threads on the front page of any 4chan imageboard from a terminal. **Supports *ASCII art* images!**
 
